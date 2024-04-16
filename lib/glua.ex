@@ -6,7 +6,12 @@ defmodule Glua do
 
   def empty_stack(), do: :erlang.nif_error(:nif_not_loaded)
 
-  def push(_stack, _constant), do: :erlang.nif_error(:nif_not_loaded)
+  def push(_constant, _stack), do: :erlang.nif_error(:nif_not_loaded)
+
+  def add(_stack), do: :erlang.nif_error(:nif_not_loaded)
+
+  def take_stack(_stack), do: :erlang.nif_error(:nif_not_loaded)
+
 
 
 end
