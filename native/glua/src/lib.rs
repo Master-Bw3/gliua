@@ -1,53 +1,68 @@
-use rustler::{Env, NifStruct, ResourceArc, Term};
-use uiua::Uiua;
-use std::ops::Deref;
+mod op;
+use op::Op;
+use rustler::{Encoder, Env, NifMap, NifStruct, NifUnitEnum, ResourceArc, Term};
+use uiua::{Primitive, Uiua, Value};
 
-pub struct UiuaRef(pub Uiua);
-
-#[derive(NifStruct)]
-#[module = "Uiua.Runtime"]
-pub struct ExUiua {
-    pub resource: ResourceArc<UiuaRef>,
+#[derive(NifMap, Clone)]
+struct Instruction {
+    pub op: Op,
+    pub value: Option<i32>,
 }
 
-impl ExUiua {
-    pub fn new(runtime: Uiua) -> Self {
-        Self {
-            resource: ResourceArc::new(UiuaRef::new(runtime)),
+impl Instruction {
+    pub(crate) fn apply(&self, uiua: &mut Uiua) {
+        match self.op {
+            Op::Push => uiua.push(self.value.unwrap()),
+            _ => {
+                let _ = Primitive::from(self.op.clone()).run(uiua);
+            }
         }
     }
 }
 
-impl UiuaRef {
-    pub fn new(runtime: Uiua) -> Self {
-        Self(runtime)
+#[rustler::nif]
+fn empty_stack() -> Vec<Instruction> {
+    return vec![];
+}
+
+#[rustler::nif]
+fn push(constant: i32, instruction_stack: Vec<Instruction>) -> Vec<Instruction> {
+    let mut new_instruction_stack = instruction_stack.clone();
+    new_instruction_stack.push(Instruction {
+        op: Op::Push,
+        value: Some(constant),
+    });
+    return new_instruction_stack;
+}
+
+#[rustler::nif]
+fn take_stack(env: Env, instruction_stack: Vec<Instruction>) -> Vec<Term> {
+    let mut runtime = uiua::Uiua::with_safe_sys();
+    
+    instruction_stack.iter().for_each(|intstruction| intstruction.apply(&mut runtime));
+
+    runtime
+        .take_stack()
+        .iter()
+        .map(|value| uiua_value_to_elixir_term(env.clone(), &runtime, value))
+        .collect()
+}
+
+fn uiua_value_to_elixir_term<'a>(elixir_env: Env<'a>, uiua_env: &Uiua, value: &Value) -> Term<'a> {
+    match value {
+        Value::Byte(_) => Value::as_bytes(value, uiua_env, "")
+            .unwrap()
+            .encode(elixir_env),
+
+        Value::Num(_) => Value::as_num(value, uiua_env, "")
+            .map(|x| x.encode(elixir_env))
+            .or_else(|_| Value::as_nums(value, uiua_env, "").map(|x| x.encode(elixir_env)))
+            .unwrap(),
+
+        Value::Complex(_) => todo!(),
+        Value::Char(_) => todo!(),
+        Value::Box(_) => todo!(),
     }
 }
 
-impl Deref for ExUiua {
-    type Target = Uiua;
-
-    fn deref(&self) -> &Self::Target {
-        &self.resource.0
-    }
-}
-
-unsafe impl Send for UiuaRef {}
-unsafe impl Sync for UiuaRef {}
-
-fn on_load(env: Env, _info: Term) -> bool {
-    rustler::resource!(UiuaRef, env);
-    true
-}
-
-#[rustler::nif(schedule = "DirtyCpu")]
-fn init_runtime() -> Result<ExUiua, ()> {
-    let runtime = Uiua::with_safe_sys();
-    Ok(ExUiua::new(runtime))
-}
-
-rustler::init!(
-    "Elixir.Glua",
-    [init_runtime],
-    load = on_load
-);
+rustler::init!("Elixir.Glua", [empty_stack, push]);
