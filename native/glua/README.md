@@ -1,4 +1,4 @@
-# NIF for Elixir.Glua
+# NIF for Elixir.Gliua
 
 ## To build the NIF module:
 
@@ -7,8 +7,8 @@
 ## To load the NIF:
 
 ```elixir
-defmodule Glua do
-  use Rustler, otp_app: :glua, crate: "glua"
+defmodule Gliua do
+  use Rustler, otp_app: :gliua, crate: "gliua"
 
   # When your NIF is loaded, it will override this function.
   def add(_a, _b), do: :erlang.nif_error(:nif_not_loaded)

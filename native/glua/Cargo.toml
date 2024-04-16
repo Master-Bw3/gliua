@@ -1,11 +1,11 @@
 [package]
-name = "glua"
+name = "gliua"
 version = "0.1.0"
 authors = []
 edition = "2021"
 
 [lib]
-name = "glua"
+name = "gliua"
 path = "src/lib.rs"
 crate-type = ["cdylib"]
 

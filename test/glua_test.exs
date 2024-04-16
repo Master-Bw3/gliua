@@ -1,10 +1,10 @@
-defmodule GluaTest do
+defmodule GliuaTest do
   use ExUnit.Case
-  doctest Glua
+  doctest Gliua
 
 
 
   test "owo" do
-    Glua.empty_stack()
+    Gliua.empty_stack()
   end
 end

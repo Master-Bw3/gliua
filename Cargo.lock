@@ -238,7 +238,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "glua"
+name = "gliua"
 version = "0.1.0"
 dependencies = [
  "rustler",

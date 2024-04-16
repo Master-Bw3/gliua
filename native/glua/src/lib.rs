@@ -26,7 +26,7 @@ fn empty_stack() -> Vec<Instruction> {
 }
 
 #[rustler::nif]
-fn push(constant: i32, instruction_stack: Vec<Instruction>) -> Vec<Instruction> {
+fn push(instruction_stack: Vec<Instruction>, constant: i32) -> Vec<Instruction> {
     let mut new_instruction_stack = instruction_stack.clone();
     new_instruction_stack.push(Instruction {
         op: Op::Push,
@@ -75,4 +75,4 @@ fn uiua_value_to_elixir_term<'a>(elixir_env: Env<'a>, uiua_env: &Uiua, value: &V
     }
 }
 
-rustler::init!("Elixir.Glua", [empty_stack, push, add, take_stack]);
+rustler::init!("Elixir.Gliua", [empty_stack, push, add, take_stack]);
