@@ -1,5 +1,11 @@
 pub type Instruction {
-  Push(Int)
+  PushNum(Float)
+  PushChar(String)
+  PushComplex(Float, Float)
+  PushNumList(List(Float))
+  PushString(String)
+  PushComplexList(List(#(Float, Float)))
+  PushByteArray(List(Int))
   Dup
   Over
   Flip

@@ -10,5 +10,6 @@ path = "src/lib.rs"
 crate-type = ["dylib"]
 
 [dependencies]
+ecow = "0.2.2"
 rustler = "0.32.1"
 uiua = { version = "0.10.3", default-features = false, features = ["batteries"] }
