@@ -1,9 +1,12 @@
 mod op;
 use op::Op;
-use rustler::{Encoder, Env, NifMap, NifStruct, NifUnitEnum, ResourceArc, Term};
+use rustler::{
+    types::tuple::get_tuple, Decoder, Encoder, Env, NifMap, NifStruct, NifTuple, NifUnitEnum,
+    ResourceArc, Term,
+};
 use uiua::{Primitive, Uiua, Value};
 
-#[derive(NifMap, Clone)]
+#[derive(Clone, Debug)]
 struct Instruction {
     pub op: Op,
     pub value: Option<i32>,
@@ -16,6 +19,40 @@ impl Instruction {
             _ => {
                 let _ = Primitive::from(self.op.clone()).run(uiua);
             }
+        }
+    }
+}
+
+impl Encoder for Instruction {
+    fn encode<'a>(&self, env: Env<'a>) -> Term<'a> {
+        match self.value {
+            Some(value) => (self.op, value).encode(env),
+            None => self.op.encode(env),
+        }
+    }
+}
+
+impl<'a> Decoder<'a> for Instruction {
+    fn decode(term: Term<'a>) -> rustler::NifResult<Self> {
+        if let Ok(tuple) = get_tuple(term) {
+            let op = tuple
+                .get(0)
+                .map(|term| Op::decode(*term))
+                .unwrap_or(Err(rustler::Error::BadArg))?;
+
+            let value = Some(
+                tuple
+                    .get(1)
+                    .map(|term| i32::decode(*term))
+                    .unwrap_or(Err(rustler::Error::BadArg))?,
+            );
+
+            Ok(Self { op, value })
+        } else {
+            Ok(Self {
+                op: Op::decode(term)?,
+                value: None,
+            })
         }
     }
 }
@@ -48,14 +85,26 @@ fn add(instruction_stack: Vec<Instruction>) -> Vec<Instruction> {
 #[rustler::nif]
 fn take_stack(env: Env, instruction_stack: Vec<Instruction>) -> Vec<Term> {
     let mut runtime = uiua::Uiua::with_safe_sys();
-    
-    instruction_stack.iter().for_each(|intstruction| intstruction.apply(&mut runtime));
+
+    instruction_stack
+        .iter()
+        .for_each(|intstruction| intstruction.apply(&mut runtime));
 
     runtime
         .take_stack()
         .iter()
         .map(|value| uiua_value_to_elixir_term(env.clone(), &runtime, value))
         .collect()
+}
+
+#[rustler::nif]
+fn push_op(op: Term, instruction_stack: Vec<Instruction>) -> Vec<Instruction> {
+    let mut new_instruction_stack = instruction_stack.clone();
+    println!("{:?}", op);
+    println!("{:?}", Instruction::decode(op));
+
+    // new_instruction_stack.push(op);
+    return new_instruction_stack;
 }
 
 fn uiua_value_to_elixir_term<'a>(elixir_env: Env<'a>, uiua_env: &Uiua, value: &Value) -> Term<'a> {
@@ -75,4 +124,4 @@ fn uiua_value_to_elixir_term<'a>(elixir_env: Env<'a>, uiua_env: &Uiua, value: &V
     }
 }
 
-rustler::init!("gliua_rs", [empty_stack, push, add, take_stack]);
+rustler::init!("gliua_rs", [empty_stack, push, push_op, add, take_stack]);

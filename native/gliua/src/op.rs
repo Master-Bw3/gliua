@@ -1,7 +1,7 @@
 use rustler::{Encoder, Env, NifUnitEnum, Term};
 use uiua::Uiua;
 
-#[derive(NifUnitEnum, Clone, Copy)]
+#[derive(NifUnitEnum, Clone, Copy, Debug)]
 pub(crate) enum Op {
     Push,
     Dup,
