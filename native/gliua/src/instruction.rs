@@ -1,5 +1,56 @@
 use rustler::{Encoder, Env, NifUnitEnum, Term};
-use uiua::Uiua;
+use uiua::{Primitive, Uiua};
+
+#[derive(Clone, Debug)]
+pub(crate) struct Instruction {
+    pub op: Op,
+    pub value: Option<i32>,
+}
+
+impl Instruction {
+    pub(crate) fn apply(&self, uiua: &mut Uiua) {
+        match self.op {
+            Op::Push => uiua.push(self.value.unwrap()),
+            _ => {
+                let _ = Primitive::from(self.op.clone()).run(uiua);
+            }
+        }
+    }
+}
+
+impl Encoder for Instruction {
+    fn encode<'a>(&self, env: Env<'a>) -> Term<'a> {
+        match self.value {
+            Some(value) => (self.op, value).encode(env),
+            None => self.op.encode(env),
+        }
+    }
+}
+
+impl<'a> Decoder<'a> for Instruction {
+    fn decode(term: Term<'a>) -> rustler::NifResult<Self> {
+        if let Ok(tuple) = get_tuple(term) {
+            let op = tuple
+                .get(0)
+                .map(|term| Op::decode(*term))
+                .unwrap_or(Err(rustler::Error::BadArg))?;
+
+            let value = Some(
+                tuple
+                    .get(1)
+                    .map(|term| i32::decode(*term))
+                    .unwrap_or(Err(rustler::Error::BadArg))?,
+            );
+
+            Ok(Self { op, value })
+        } else {
+            Ok(Self {
+                op: Op::decode(term)?,
+                value: None,
+            })
+        }
+    }
+}
 
 #[derive(NifUnitEnum, Clone, Copy, Debug)]
 pub(crate) enum Op {
@@ -134,7 +185,7 @@ pub(crate) enum Op {
     Quote,
     Sig,
     Csv,
-    Repr
+    Repr,
 }
 
 impl From<uiua::Primitive> for Op {
@@ -276,7 +327,6 @@ impl From<uiua::Primitive> for Op {
     }
 }
 
-
 impl From<Op> for uiua::Primitive {
     fn from(value: Op) -> Self {
         match value {
@@ -415,4 +465,3 @@ impl From<Op> for uiua::Primitive {
         }
     }
 }
-
