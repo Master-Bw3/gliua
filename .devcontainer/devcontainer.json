@@ -6,7 +6,6 @@
 	"image": "mcr.microsoft.com/devcontainers/base:jammy",
 	"features": {
 		"ghcr.io/devcontainers/features/rust:1": {},
-		"ghcr.io/devcontainers-contrib/features/elixir-asdf:2": {},
 		"ghcr.io/devcontainers-contrib/features/gleam:1": {}
 	},
 

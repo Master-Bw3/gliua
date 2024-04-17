@@ -75,4 +75,4 @@ fn uiua_value_to_elixir_term<'a>(elixir_env: Env<'a>, uiua_env: &Uiua, value: &V
     }
 }
 
-rustler::init!("Elixir.Gliua", [empty_stack, push, add, take_stack]);
+rustler::init!("gliua_rs", [empty_stack, push, add, take_stack]);

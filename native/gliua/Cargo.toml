@@ -7,7 +7,7 @@ edition = "2021"
 [lib]
 name = "gliua"
 path = "src/lib.rs"
-crate-type = ["cdylib"]
+crate-type = ["dylib"]
 
 [dependencies]
 rustler = "0.32.1"
