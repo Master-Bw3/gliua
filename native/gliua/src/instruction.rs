@@ -1,4 +1,4 @@
-use rustler::{Encoder, Env, NifUnitEnum, Term};
+use rustler::{types::tuple::get_tuple, Decoder, Encoder, Env, NifUnitEnum, Term};
 use uiua::{Primitive, Uiua};
 
 #[derive(Clone, Debug)]
