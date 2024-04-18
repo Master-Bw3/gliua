@@ -1,12 +1,18 @@
-import gleam/dynamic.{type Dynamic}
 import gleam/io
+import gleam/list
+import gliua/builder
 import gliua/instruction.{type Instruction}
-
-pub type Value
+import gliua/value.{type Value}
 
 pub fn main() {
-  todo
-}
+  let assert Ok(values) =
+    []
+    |> builder.push_int_list([1, 2, 54])
+    |> builder.couple()
+    |> builder.take_stack()
 
-@external(erlang, "gliua_rs", "evaluate")
-pub fn take_stack(instructions: List(Instruction)) -> List(Dynamic)
+  let assert Ok(value) = list.first(values)
+
+  value.to_string(value)
+  |> io.debug()
+}

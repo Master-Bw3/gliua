@@ -1,4 +1,6 @@
+import gleam/dynamic.{type Dynamic}
 import gleam/int
+import gleam/list
 import gliua/instruction.{type Instruction}
 
 pub fn push_int(
@@ -23,7 +25,14 @@ pub fn push_complex(
   [instruction.PushComplex(real, imaginary), ..instructions]
 }
 
-pub fn push_number_list(
+pub fn push_int_list(
+  instructions: List(Instruction),
+  constant: List(Int),
+) -> List(Instruction) {
+  [instruction.PushNumList(list.map(constant, int.to_float)), ..instructions]
+}
+
+pub fn push_float_list(
   instructions: List(Instruction),
   constant: List(Float),
 ) -> List(Instruction) {
@@ -54,3 +63,24 @@ pub fn push_byte_array(
 pub fn add(instructions: List(Instruction)) -> List(Instruction) {
   [instruction.Add, ..instructions]
 }
+
+pub fn stack(instructions: List(Instruction)) -> List(Instruction) {
+  [instruction.Stack, ..instructions]
+}
+
+import gliua/value.{type Value}
+
+pub fn repr(instructions: List(Instruction)) -> List(Instruction) {
+  [instruction.Repr, ..instructions]
+}
+
+pub fn pop(instructions: List(Instruction)) -> List(Instruction) {
+  [instruction.Pop, ..instructions]
+}
+
+pub fn couple(instructions: List(Instruction)) -> List(Instruction) {
+  [instruction.Couple, ..instructions]
+}
+
+@external(erlang, "gliua_rs", "evaluate")
+pub fn take_stack(instructions: List(Instruction)) -> Result(List(Value), String)

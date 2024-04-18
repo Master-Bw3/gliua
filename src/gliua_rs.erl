@@ -1,6 +1,6 @@
 -module(gliua_rs).
--export([evaluate/1, value_test/1]).
--nifs([evaluate/1, value_test/1]).
+-export([evaluate/1, to_string/1, uncouple/1, join/2, couple/2]).
+-nifs([evaluate/1, to_string/1, uncouple/1, join/2, couple/2]).
 -on_load(init/0).
 
 init() ->
@@ -9,5 +9,14 @@ init() ->
 evaluate(_stack) ->
     exit(nif_library_not_loaded).
 
-value_test(_value) ->
+to_string(_value) ->
+    exit(nif_library_not_loaded).
+
+uncouple(_value) ->
+    exit(nif_library_not_loaded).
+
+join(_value, _value2) ->
+    exit(nif_library_not_loaded).
+
+couple(_value, _value2) ->
     exit(nif_library_not_loaded).

@@ -1,46 +1,41 @@
+mod gliua_value;
 mod instruction;
 
 use instruction::Op;
-use rustler::{Decoder, Encoder, Env, Term};
-use uiua::Uiua;
+use rustler::{Env, Term};
 
-
+use crate::gliua_value::{ExValue, ValueRef};
 
 #[rustler::nif]
-fn evaluate(env: Env, instruction_stack: Vec<Op>) -> Result<Vec<Term>, String> {
+fn evaluate(instruction_stack: Vec<Op>) -> Result<Vec<ExValue>, String> {
     let mut runtime = uiua::Uiua::with_safe_sys();
 
-
     for instruction in instruction_stack.iter().rev() {
-        instruction.apply(&mut runtime).map_err(|err| err.to_string())?
+        instruction
+            .apply(&mut runtime)
+            .map_err(|err| err.to_string())?
     }
 
     Ok(runtime
         .take_stack()
-        .iter()
-        .map(|value| uiua_value_to_erlang_term(env.clone(), &runtime, value))
+        .into_iter()
+        .map(|value| ExValue::new(value))
         .collect())
 }
 
-fn uiua_value_to_erlang_term<'a>(
-    elixir_env: Env<'a>,
-    uiua_env: &Uiua,
-    value: &uiua::Value,
-) -> Term<'a> {
-    match value {
-        uiua::Value::Byte(_) => uiua::Value::as_bytes(value, uiua_env, "")
-            .unwrap()
-            .encode(elixir_env),
-
-        uiua::Value::Num(_) => uiua::Value::as_num(value, uiua_env, "")
-            .map(|x| x.encode(elixir_env))
-            .or_else(|_| uiua::Value::as_nums(value, uiua_env, "").map(|x| x.encode(elixir_env)))
-            .unwrap(),
-
-        uiua::Value::Complex(_) => todo!(),
-        uiua::Value::Char(_) => todo!(),
-        uiua::Value::Box(_) => todo!(),
-    }
+fn on_load(env: Env, _info: Term) -> bool {
+    rustler::resource!(ValueRef, env);
+    true
 }
 
-rustler::init!("gliua_rs", [evaluate]);
+rustler::init!(
+    "gliua_rs",
+    [
+        evaluate,
+        gliua_value::to_string,
+        gliua_value::join,
+        gliua_value::couple,
+        gliua_value::uncouple
+    ],
+    load = on_load
+);
