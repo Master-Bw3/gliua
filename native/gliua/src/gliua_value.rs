@@ -3,6 +3,8 @@ use std::ops::Deref;
 use rustler::{Env, NifMap, NifStruct, NifTaggedEnum, ResourceArc, Term};
 use uiua::{Uiua, UiuaError, Value};
 
+use crate::uiua_env::ExUiua;
+
 pub(crate) struct ValueRef(pub Value);
 
 
@@ -40,25 +42,4 @@ unsafe impl Sync for ValueRef {}
 #[rustler::nif(schedule = "DirtyCpu")]
 pub(crate) fn to_string(value: ExValue) -> String {
     value.to_string()
-}
-
-#[rustler::nif(schedule = "DirtyCpu")]
-pub(crate) fn join(this: ExValue, other: ExValue) -> Result<ExValue, String> {
-    this.clone().join(other.clone(), &Uiua::with_safe_sys())
-    .map(ExValue::new)
-    .map_err(|err| err.to_string())
-}
-
-#[rustler::nif(schedule = "DirtyCpu")]
-pub(crate) fn couple(this: ExValue, other: ExValue) -> Result<ExValue, String> {
-    this.clone().couple(other.clone(), &Uiua::with_safe_sys())
-    .map(ExValue::new)
-    .map_err(|err| err.to_string())
-}
-
-#[rustler::nif(schedule = "DirtyCpu")]
-pub(crate) fn uncouple(this: ExValue, other: ExValue) -> Result<(ExValue, ExValue), String> {
-    this.clone().uncouple(&Uiua::with_safe_sys())
-    .map(|(a, b)| (ExValue::new(a), ExValue::new(b)))
-    .map_err(|err| err.to_string())
 }

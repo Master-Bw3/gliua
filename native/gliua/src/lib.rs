@@ -1,10 +1,11 @@
 mod gliua_value;
 mod instruction;
+mod uiua_env;
 
 use instruction::Op;
 use rustler::{Env, Term};
 
-use crate::gliua_value::{ExValue, ValueRef};
+use crate::{gliua_value::{ExValue, ValueRef}, uiua_env::UiuaRef};
 
 #[rustler::nif]
 fn evaluate(instruction_stack: Vec<Op>) -> Result<Vec<ExValue>, String> {
@@ -25,6 +26,7 @@ fn evaluate(instruction_stack: Vec<Op>) -> Result<Vec<ExValue>, String> {
 
 fn on_load(env: Env, _info: Term) -> bool {
     rustler::resource!(ValueRef, env);
+    rustler::resource!(UiuaRef, env);
     true
 }
 
@@ -32,10 +34,8 @@ rustler::init!(
     "gliua_rs",
     [
         evaluate,
+        uiua_env::new_runtime,
         gliua_value::to_string,
-        gliua_value::join,
-        gliua_value::couple,
-        gliua_value::uncouple
     ],
     load = on_load
 );
