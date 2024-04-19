@@ -11,7 +11,7 @@ use crate::{gliua_value::{ExValue, ValueRef}, uiua_env::UiuaRef};
 fn evaluate(instruction_stack: Vec<Op>) -> Result<Vec<ExValue>, String> {
     let mut runtime = uiua::Uiua::with_safe_sys();
 
-    for instruction in instruction_stack.iter().rev() {
+    for instruction in instruction_stack.into_iter().rev() {
         instruction
             .apply(&mut runtime)
             .map_err(|err| err.to_string())?

@@ -1,4 +1,7 @@
+import gliua/value.{type Value}
+
 pub type Instruction {
+  PushValue(Value)
   PushNum(Float)
   PushChar(String)
   PushComplex(Float, Float)

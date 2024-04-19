@@ -2,8 +2,11 @@ use ecow::EcoVec;
 use rustler::{types::tuple::get_tuple, Decoder, Encoder, Env, NifTaggedEnum, NifUnitEnum, Term};
 use uiua::{Complex, Primitive, Uiua, UiuaResult};
 
-#[derive(NifTaggedEnum, Clone, Debug)]
+use crate::gliua_value::ExValue;
+
+#[derive(NifTaggedEnum)]
 pub(crate) enum Op {
+    PushValue(ExValue),
     PushNum(f64),
     PushChar(String),
     PushComplex(f64, f64),
@@ -145,27 +148,29 @@ pub(crate) enum Op {
 }
 
 impl Op {
-    pub(crate) fn apply(&self, uiua: &mut Uiua) -> UiuaResult {
+    pub(crate) fn apply(self, uiua: &mut Uiua) -> UiuaResult {
         match self {
-            Op::PushNum(value) => Ok(uiua.push(value.clone())),
+            Op::PushValue(value) => Ok(uiua.push(value.clone())),
 
-            Op::PushChar(value) => Ok(uiua.push(value.clone())),
+            Op::PushNum(value) => Ok(uiua.push(value)),
 
-            Op::PushComplex(re, im) => Ok(uiua.push(Complex::new(*re, *im))),
+            Op::PushChar(value) => Ok(uiua.push(value)),
 
-            Op::PushNumList(value) => Ok(uiua.push(EcoVec::<f64>::from(value.clone()))),
+            Op::PushComplex(re, im) => Ok(uiua.push(Complex::new(re, im))),
 
-            Op::PushString(value) => Ok(uiua.push(value.clone())),
+            Op::PushNumList(value) => Ok(uiua.push(EcoVec::<f64>::from(value))),
+
+            Op::PushString(value) => Ok(uiua.push(value)),
 
             Op::PushComplexList(values) => Ok(uiua.push(
                 values
-                    .iter()
-                    .map(|(re, im)| Complex::new(*re, *im))
+                    .into_iter()
+                    .map(|(re, im)| Complex::new(re, im))
                     .collect::<EcoVec<Complex>>(),
             )),
 
             Op::PushByteArray(value) => Ok(uiua.push(EcoVec::<u8>::from(value.clone()))),
-            _ => Primitive::from(self.clone()).run(uiua),
+            _ => Primitive::from(self).run(uiua),
         }
     }
 }

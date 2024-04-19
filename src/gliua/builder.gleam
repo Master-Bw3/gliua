@@ -1,20 +1,27 @@
-import gleam/dynamic.{type Dynamic}
 import gleam/int
 import gleam/list
 import gliua/instruction.{type Instruction}
+import gliua/value.{type Value}
+
+pub fn push_value(
+  instructions: List(Instruction),
+  value: Value,
+) -> List(Instruction) {
+  [instruction.PushValue(value), ..instructions]
+}
 
 pub fn push_int(
   instructions: List(Instruction),
-  constant: Int,
+  value: Int,
 ) -> List(Instruction) {
-  [instruction.PushNum(int.to_float(constant)), ..instructions]
+  [instruction.PushNum(int.to_float(value)), ..instructions]
 }
 
 pub fn push_float(
   instructions: List(Instruction),
-  constant: Float,
+  value: Float,
 ) -> List(Instruction) {
-  [instruction.PushNum(constant), ..instructions]
+  [instruction.PushNum(value), ..instructions]
 }
 
 pub fn push_complex(
@@ -27,37 +34,37 @@ pub fn push_complex(
 
 pub fn push_int_list(
   instructions: List(Instruction),
-  constant: List(Int),
+  value: List(Int),
 ) -> List(Instruction) {
-  [instruction.PushNumList(list.map(constant, int.to_float)), ..instructions]
+  [instruction.PushNumList(list.map(value, int.to_float)), ..instructions]
 }
 
 pub fn push_float_list(
   instructions: List(Instruction),
-  constant: List(Float),
+  value: List(Float),
 ) -> List(Instruction) {
-  [instruction.PushNumList(constant), ..instructions]
+  [instruction.PushNumList(value), ..instructions]
 }
 
 pub fn push_string(
   instructions: List(Instruction),
-  constant: String,
+  value: String,
 ) -> List(Instruction) {
-  [instruction.PushString(constant), ..instructions]
+  [instruction.PushString(value), ..instructions]
 }
 
 pub fn push_complex_list(
   instructions: List(Instruction),
-  constant: List(#(Float, Float)),
+  value: List(#(Float, Float)),
 ) -> List(Instruction) {
-  [instruction.PushComplexList(constant), ..instructions]
+  [instruction.PushComplexList(value), ..instructions]
 }
 
 pub fn push_byte_array(
   instructions: List(Instruction),
-  constant: List(Int),
+  value: List(Int),
 ) -> List(Instruction) {
-  [instruction.PushByteArray(constant), ..instructions]
+  [instruction.PushByteArray(value), ..instructions]
 }
 
 pub fn add(instructions: List(Instruction)) -> List(Instruction) {
@@ -67,8 +74,6 @@ pub fn add(instructions: List(Instruction)) -> List(Instruction) {
 pub fn stack(instructions: List(Instruction)) -> List(Instruction) {
   [instruction.Stack, ..instructions]
 }
-
-import gliua/value.{type Value}
 
 pub fn repr(instructions: List(Instruction)) -> List(Instruction) {
   [instruction.Repr, ..instructions]
@@ -83,4 +88,6 @@ pub fn couple(instructions: List(Instruction)) -> List(Instruction) {
 }
 
 @external(erlang, "gliua_rs", "evaluate")
-pub fn take_stack(instructions: List(Instruction)) -> Result(List(Value), String)
+pub fn take_stack(
+  instructions: List(Instruction),
+) -> Result(List(Value), String)
