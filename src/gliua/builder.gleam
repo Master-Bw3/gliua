@@ -2,6 +2,7 @@ import gleam/int
 import gleam/list
 import gliua/instruction.{type Instruction}
 import gliua/value.{type Value}
+import gliua/runtime.{type Runtime}
 
 pub fn push_value(
   instructions: List(Instruction),
@@ -88,6 +89,4 @@ pub fn couple(instructions: List(Instruction)) -> List(Instruction) {
 }
 
 @external(erlang, "gliua_rs", "evaluate")
-pub fn take_stack(
-  instructions: List(Instruction),
-) -> Result(List(Value), String)
+pub fn evaluate(instructions: List(Instruction)) -> Runtime

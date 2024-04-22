@@ -5,10 +5,10 @@ mod uiua_env;
 use instruction::Op;
 use rustler::{Env, Term};
 
-use crate::{gliua_value::{ExValue, ValueRef}, uiua_env::UiuaRef};
+use crate::{gliua_value::{ValueRef}, uiua_env::{ExUiua, UiuaRef}};
 
-#[rustler::nif]
-fn evaluate(instruction_stack: Vec<Op>) -> Result<Vec<ExValue>, String> {
+#[rustler::nif(schedule = "DirtyCpu")]
+fn evaluate(instruction_stack: Vec<Op>) -> Result<ExUiua, String> {
     let mut runtime = uiua::Uiua::with_safe_sys();
 
     for instruction in instruction_stack.into_iter().rev() {
@@ -17,11 +17,7 @@ fn evaluate(instruction_stack: Vec<Op>) -> Result<Vec<ExValue>, String> {
             .map_err(|err| err.to_string())?
     }
 
-    Ok(runtime
-        .take_stack()
-        .into_iter()
-        .map(|value| ExValue::new(value))
-        .collect())
+    Ok(ExUiua::new(runtime))
 }
 
 fn on_load(env: Env, _info: Term) -> bool {

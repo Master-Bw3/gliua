@@ -20,6 +20,10 @@ impl ExValue {
             resource: ResourceArc::new(ValueRef::new(value)),
         }
     }
+
+    pub fn value(&self) -> &Value {
+        &self.resource.0
+    }
 }
 
 impl ValueRef {
@@ -39,7 +43,7 @@ impl Deref for ExValue {
 unsafe impl Send for ValueRef {}
 unsafe impl Sync for ValueRef {}
 
-#[rustler::nif(schedule = "DirtyCpu")]
+#[rustler::nif]
 pub(crate) fn to_string(value: ExValue) -> String {
     value.to_string()
 }

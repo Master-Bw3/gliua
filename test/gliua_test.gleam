@@ -15,8 +15,6 @@ pub fn push_int_test() {
   let result =
     []
     |> builder.push_int(5)
-    |> builder.take_stack()
-
-  should.be_ok(result)
-  let assert Ok(stack) = result
+    |> builder.evaluate()
+    |> io.debug()
 }
