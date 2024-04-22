@@ -1,8 +1,8 @@
 import gleam/int
 import gleam/list
 import gliua/instruction.{type Instruction}
-import gliua/value.{type Value}
 import gliua/runtime.{type Runtime}
+import gliua/value.{type Value}
 
 pub fn push_value(
   instructions: List(Instruction),
@@ -89,4 +89,4 @@ pub fn couple(instructions: List(Instruction)) -> List(Instruction) {
 }
 
 @external(erlang, "gliua_rs", "evaluate")
-pub fn evaluate(instructions: List(Instruction)) -> Runtime
+pub fn evaluate(instructions: List(Instruction)) -> Result(Runtime, String)

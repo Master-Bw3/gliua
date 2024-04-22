@@ -1,20 +1,41 @@
-import gleam/dynamic
 import gleam/io
-import gleam/list
+import gleam/result
 import gleeunit
 import gleeunit/should
-import gliua
 import gliua/builder
-import gliua/instruction.{type Instruction}
+import gliua/decode
+import gliua/runtime
 
 pub fn main() {
   gleeunit.main()
 }
 
 pub fn push_int_test() {
-  let result =
+  let eval_result =
     []
     |> builder.push_int(5)
     |> builder.evaluate()
-    |> io.debug()
+
+  let result =
+    result.map(eval_result, fn(runtime) {
+      runtime.stack(runtime)
+      |> decode.stack_1(runtime, decode.int)
+    })
+
+  should.equal(result, Ok(Ok(5)))
+}
+
+pub fn push_float_test() {
+  let eval_result =
+    []
+    |> builder.push_float(5.5)
+    |> builder.evaluate()
+
+  let result =
+    result.map(eval_result, fn(runtime) {
+      runtime.stack(runtime)
+      |> decode.stack_1(runtime, decode.float)
+    })
+
+  should.equal(result, Ok(Ok(5.5)))
 }

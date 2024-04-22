@@ -1,5 +1,4 @@
 import gleam/list
-import gleam/result
 import gliua/runtime.{type Runtime}
 import gliua/value.{type Value}
 
@@ -13,11 +12,30 @@ pub type DecodeError {
 pub type Decoder(t) =
   fn(Value, Runtime) -> Result(t, DecodeErrors)
 
+pub fn stack_1(
+  runtime runtime: Runtime,
+  first decoder: Decoder(a),
+) -> fn(List(Value)) -> Result(a, DecodeErrors) {
+  fn(stack) {
+    case stack {
+      [a, ..] -> decoder(a, runtime)
+      _ ->
+        Error([
+          DecodeError(
+            expected: "at least 2 elements on the stack",
+            found: "less than 2 elements on the stacks",
+          ),
+        ])
+    }
+  }
+}
+
 pub fn stack_2(
+  runtime runtime: Runtime,
   first decoder1: Decoder(a),
   second decoder2: Decoder(b),
-) -> fn(List(Value), Runtime) -> Result(#(a, b), DecodeErrors) {
-  fn(stack, runtime) {
+) -> fn(List(Value)) -> Result(#(a, b), DecodeErrors) {
+  fn(stack) {
     case stack {
       [a, b, ..] ->
         case decoder1(a, runtime), decoder2(b, runtime) {
@@ -36,11 +54,12 @@ pub fn stack_2(
 }
 
 pub fn stack_3(
+  runtime runtime: Runtime,
   first decoder1: Decoder(a),
   second decoder2: Decoder(b),
   third decoder3: Decoder(c),
-) -> fn(List(Value), Runtime) -> Result(#(a, b, c), DecodeErrors) {
-  fn(stack, runtime) {
+) -> fn(List(Value)) -> Result(#(a, b, c), DecodeErrors) {
+  fn(stack) {
     case stack {
       [a, b, c, ..] ->
         case decoder1(a, runtime), decoder2(b, runtime), decoder3(c, runtime) {
@@ -66,5 +85,8 @@ fn all_errors(result: Result(a, List(DecodeError))) -> List(DecodeError) {
   }
 }
 
-@external(erlang, "gliua_rs", "to_int")
+@external(erlang, "gliua_rs", "as_int")
 pub fn int(value: Value, runtime: Runtime) -> Result(Int, DecodeErrors)
+
+@external(erlang, "gliua_rs", "as_float")
+pub fn float(value: Value, runtime: Runtime) -> Result(Float, DecodeErrors)
