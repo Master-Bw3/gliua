@@ -1,78 +1,56 @@
-mod op;
-use op::Op;
-use rustler::{Encoder, Env, NifMap, NifStruct, NifUnitEnum, ResourceArc, Term};
-use uiua::{Primitive, Uiua, Value};
+mod gliua_value;
+mod instruction;
+mod uiua_env;
 
-#[derive(NifMap, Clone)]
-struct Instruction {
-    pub op: Op,
-    pub value: Option<i32>,
-}
+use gliua_value::ExValue;
+use instruction::Op;
+use rustler::{Encoder, Env, Term};
 
-impl Instruction {
-    pub(crate) fn apply(&self, uiua: &mut Uiua) {
-        match self.op {
-            Op::Push => uiua.push(self.value.unwrap()),
-            _ => {
-                let _ = Primitive::from(self.op.clone()).run(uiua);
-            }
-        }
-    }
-}
+use crate::{
+    gliua_value::{DecodeError, ValueRef},
+    uiua_env::{ExUiua, UiuaRef},
+};
 
-#[rustler::nif]
-fn empty_stack() -> Vec<Instruction> {
-    return vec![];
-}
-
-#[rustler::nif]
-fn push(instruction_stack: Vec<Instruction>, constant: i32) -> Vec<Instruction> {
-    let mut new_instruction_stack = instruction_stack.clone();
-    new_instruction_stack.push(Instruction {
-        op: Op::Push,
-        value: Some(constant),
-    });
-    return new_instruction_stack;
-}
-
-#[rustler::nif]
-fn add(instruction_stack: Vec<Instruction>) -> Vec<Instruction> {
-    let mut new_instruction_stack = instruction_stack.clone();
-    new_instruction_stack.push(Instruction {
-        op: Op::Add,
-        value: None,
-    });
-    return new_instruction_stack;
-}
-
-#[rustler::nif]
-fn take_stack(env: Env, instruction_stack: Vec<Instruction>) -> Vec<Term> {
+#[rustler::nif(schedule = "DirtyCpu")]
+fn evaluate(instruction_stack: Vec<Op>) -> Result<ExUiua, String> {
     let mut runtime = uiua::Uiua::with_safe_sys();
-    
-    instruction_stack.iter().for_each(|intstruction| intstruction.apply(&mut runtime));
 
+    for instruction in instruction_stack.into_iter().rev() {
+        instruction
+            .apply(&mut runtime)
+            .map_err(|err| err.to_string())?
+    }
+
+    Ok(ExUiua::new(runtime))
+}
+
+#[rustler::nif]
+fn stack(runtime: ExUiua) -> Vec<ExValue> {
     runtime
-        .take_stack()
+        .stack()
         .iter()
-        .map(|value| uiua_value_to_elixir_term(env.clone(), &runtime, value))
+        .map(|value| ExValue::new(value.clone()))
         .collect()
 }
 
-fn uiua_value_to_elixir_term<'a>(elixir_env: Env<'a>, uiua_env: &Uiua, value: &Value) -> Term<'a> {
-    match value {
-        Value::Byte(_) => Value::as_bytes(value, uiua_env, "")
-            .unwrap()
-            .encode(elixir_env),
-
-        Value::Num(_) => Value::as_num(value, uiua_env, "")
-            .map(|x| x.encode(elixir_env))
-            .or_else(|_| Value::as_nums(value, uiua_env, "").map(|x| x.encode(elixir_env)))
-            .unwrap(),
-
-        Value::Complex(_) => todo!(),
-        Value::Char(_) => todo!(),
-        Value::Box(_) => todo!(),
-    }
+fn on_load(env: Env, _info: Term) -> bool {
+    rustler::resource!(ValueRef, env);
+    rustler::resource!(UiuaRef, env);
+    true
 }
 
-rustler::init!("Elixir.Gliua", [empty_stack, push, add, take_stack]);
+rustler::init!(
+    "gliua_rs",
+    [
+        evaluate,
+        stack,
+        uiua_env::new_runtime,
+        gliua_value::to_string,
+        gliua_value::as_int,
+        gliua_value::as_float,
+        gliua_value::as_bool,
+        gliua_value::as_char,
+        gliua_value::as_complex,
+    ],
+    load = on_load
+);

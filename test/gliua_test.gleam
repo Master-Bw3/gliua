@@ -1,25 +1,37 @@
-import gleam/dynamic.{type Dynamic}
 import gleam/io
-import gleam/list
+import gleam/result
 import gleeunit
 import gleeunit/should
-import gliua
+import gliua/builder
+import gliua/decode
+import gliua/runtime
 
 pub fn main() {
   gleeunit.main()
 }
 
-pub fn ffi_test() {
-  let result =
-    gliua.empty_stack()
-    |> gliua.push(1)
-    |> gliua.push(2)
-    |> gliua.add()
-    |> gliua.take_stack()
+pub fn push_int_test() {
+  let eval_result =
+    []
+    |> builder.push_int(5)
+    |> builder.evaluate()
+    |> result.map(fn(runtime) {
+      runtime.stack(runtime)
+      |> decode.stack_1(decode.int)
+    })
 
-  let decoded =
-    result
-    |> list.map(dynamic.float)
+  should.equal(eval_result, Ok(Ok(5)))
+}
 
-  should.equal([Ok(3.0)], decoded)
+pub fn push_float_test() {
+  let eval_result =
+    []
+    |> builder.push_float(5.5)
+    |> builder.evaluate()
+    |> result.map(fn(runtime) {
+      runtime.stack(runtime)
+      |> decode.stack_1(decode.float)
+    })
+
+  should.equal(eval_result, Ok(Ok(5.5)))
 }

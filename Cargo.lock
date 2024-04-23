@@ -241,6 +241,7 @@ dependencies = [
 name = "gliua"
 version = "0.1.0"
 dependencies = [
+ "ecow",
  "rustler",
  "uiua",
 ]
