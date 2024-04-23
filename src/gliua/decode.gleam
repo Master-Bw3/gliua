@@ -10,15 +10,14 @@ pub type DecodeError {
 }
 
 pub type Decoder(t) =
-  fn(Value, Runtime) -> Result(t, DecodeErrors)
+  fn(Value) -> Result(t, DecodeErrors)
 
 pub fn stack_1(
-  runtime runtime: Runtime,
   first decoder: Decoder(a),
 ) -> fn(List(Value)) -> Result(a, DecodeErrors) {
   fn(stack) {
     case stack {
-      [a, ..] -> decoder(a, runtime)
+      [a, ..] -> decoder(a)
       _ ->
         Error([
           DecodeError(
@@ -31,14 +30,13 @@ pub fn stack_1(
 }
 
 pub fn stack_2(
-  runtime runtime: Runtime,
   first decoder1: Decoder(a),
   second decoder2: Decoder(b),
 ) -> fn(List(Value)) -> Result(#(a, b), DecodeErrors) {
   fn(stack) {
     case stack {
       [a, b, ..] ->
-        case decoder1(a, runtime), decoder2(b, runtime) {
+        case decoder1(a), decoder2(b) {
           Ok(a), Ok(b) -> Ok(#(a, b))
           a, b -> Error(list.concat([all_errors(a), all_errors(b)]))
         }
@@ -54,7 +52,6 @@ pub fn stack_2(
 }
 
 pub fn stack_3(
-  runtime runtime: Runtime,
   first decoder1: Decoder(a),
   second decoder2: Decoder(b),
   third decoder3: Decoder(c),
@@ -62,7 +59,7 @@ pub fn stack_3(
   fn(stack) {
     case stack {
       [a, b, c, ..] ->
-        case decoder1(a, runtime), decoder2(b, runtime), decoder3(c, runtime) {
+        case decoder1(a), decoder2(b), decoder3(c) {
           Ok(a), Ok(b), Ok(c) -> Ok(#(a, b, c))
           a, b, c ->
             Error(list.concat([all_errors(a), all_errors(b), all_errors(c)]))
@@ -86,7 +83,7 @@ fn all_errors(result: Result(a, List(DecodeError))) -> List(DecodeError) {
 }
 
 @external(erlang, "gliua_rs", "as_int")
-pub fn int(value: Value, runtime: Runtime) -> Result(Int, DecodeErrors)
+pub fn int(value: Value) -> Result(Int, DecodeErrors)
 
 @external(erlang, "gliua_rs", "as_float")
-pub fn float(value: Value, runtime: Runtime) -> Result(Float, DecodeErrors)
+pub fn float(value: Value) -> Result(Float, DecodeErrors)

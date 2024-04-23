@@ -15,14 +15,12 @@ pub fn push_int_test() {
     []
     |> builder.push_int(5)
     |> builder.evaluate()
-
-  let result =
-    result.map(eval_result, fn(runtime) {
+    |> result.map(fn(runtime) {
       runtime.stack(runtime)
-      |> decode.stack_1(runtime, decode.int)
+      |> decode.stack_1(decode.int)
     })
 
-  should.equal(result, Ok(Ok(5)))
+  should.equal(eval_result, Ok(Ok(5)))
 }
 
 pub fn push_float_test() {
@@ -30,12 +28,10 @@ pub fn push_float_test() {
     []
     |> builder.push_float(5.5)
     |> builder.evaluate()
-
-  let result =
-    result.map(eval_result, fn(runtime) {
+    |> result.map(fn(runtime) {
       runtime.stack(runtime)
-      |> decode.stack_1(runtime, decode.float)
+      |> decode.stack_1(decode.float)
     })
 
-  should.equal(result, Ok(Ok(5.5)))
+  should.equal(eval_result, Ok(Ok(5.5)))
 }
