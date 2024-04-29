@@ -84,8 +84,20 @@ pub fn pop(instructions: List(Instruction)) -> List(Instruction) {
   [instruction.Pop, ..instructions]
 }
 
+pub fn duplicate(instructions: List(Instruction)) -> List(Instruction) {
+  [instruction.Dup, ..instructions]
+}
+
 pub fn couple(instructions: List(Instruction)) -> List(Instruction) {
   [instruction.Couple, ..instructions]
+}
+
+pub fn join(instructions: List(Instruction)) -> List(Instruction) {
+  [instruction.Join, ..instructions]
+}
+
+pub fn first(instructions: List(Instruction)) -> List(Instruction) {
+  [instruction.First, ..instructions]
 }
 
 @external(erlang, "gliua_rs", "evaluate")

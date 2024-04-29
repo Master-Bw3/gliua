@@ -46,6 +46,7 @@ rustler::init!(
         stack,
         uiua_env::new_runtime,
         gliua_value::to_string,
+        gliua_value::rows,
         gliua_value::as_int,
         gliua_value::as_float,
         gliua_value::as_bool,

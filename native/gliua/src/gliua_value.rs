@@ -47,6 +47,11 @@ pub(crate) fn to_string(value: ExValue) -> String {
     value.to_string()
 }
 
+#[rustler::nif]
+pub(crate) fn rows(value: ExValue) -> Vec<ExValue> {
+    value.rows().map(ExValue::new).collect()
+}
+
 #[derive(NifTaggedEnum, Debug)]
 pub(crate) enum DecodeError {
     DecodeError(String, String),
@@ -188,7 +193,7 @@ pub(crate) fn as_char(value: ExValue) -> Result<String, DecodeError> {
 }
 
 #[rustler::nif]
-pub(crate) fn as_complex(value: ExValue) -> Result<String, DecodeError> {
+pub(crate) fn as_complex(value: ExValue) -> Result<(f64, f64), DecodeError> {
     let expected = String::from("complex");
     match value.value() {
         Value::Complex(complex) => {
@@ -198,7 +203,8 @@ pub(crate) fn as_complex(value: ExValue) -> Result<String, DecodeError> {
                     String::from("complex array with rank > 0"),
                 ))
             } else {
-                Ok(complex.as_scalar().unwrap().to_string())
+                let complex = complex.as_scalar().unwrap();
+                Ok((complex.re, complex.im))
             }
         }
         value => Err(DecodeError::DecodeError(
