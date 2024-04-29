@@ -4,6 +4,13 @@ import gliua/instruction.{type Instruction}
 import gliua/runtime.{type Runtime}
 import gliua/value.{type Value}
 
+pub fn run_str(
+  instructions: List(Instruction),
+  str: String,
+) -> List(Instruction) {
+  [instruction.RunStr(str), ..instructions]
+}
+
 pub fn push_value(
   instructions: List(Instruction),
   value: Value,

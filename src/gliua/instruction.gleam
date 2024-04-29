@@ -1,6 +1,7 @@
 import gliua/value.{type Value}
 
 pub type Instruction {
+  RunStr(String)
   PushValue(Value)
   PushNum(Float)
   PushChar(String)

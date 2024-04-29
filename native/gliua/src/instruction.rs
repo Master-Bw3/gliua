@@ -6,6 +6,7 @@ use crate::gliua_value::ExValue;
 
 #[derive(NifTaggedEnum)]
 pub(crate) enum Op {
+    RunStr(String),
     PushValue(ExValue),
     PushNum(f64),
     PushChar(String),
@@ -150,6 +151,8 @@ pub(crate) enum Op {
 impl Op {
     pub(crate) fn apply(self, uiua: &mut Uiua) -> UiuaResult {
         match self {
+            Op::RunStr(str) => uiua.run_str(str.as_str()).map(|_| ()),
+
             Op::PushValue(value) => Ok(uiua.push(value.clone())),
 
             Op::PushNum(value) => Ok(uiua.push(value)),
