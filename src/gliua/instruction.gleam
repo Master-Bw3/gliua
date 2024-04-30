@@ -1,5 +1,4 @@
 import gliua/character
-import gliua/instruction
 
 pub type Instruction {
   RunStr(String)
