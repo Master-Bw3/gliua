@@ -7,7 +7,7 @@
 import gleam/int
 import gleam/list
 import gliua/character
-import gliua/instruction
+import gliua/instruction.{type Instruction}
 import gliua/runtime.{type Runtime}
 import gliua/value.{type Value}
 

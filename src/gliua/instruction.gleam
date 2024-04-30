@@ -1,9 +1,10 @@
 import gliua/character
+import gliua/value
 
 pub type Instruction {
   RunStr(String)
   RunFile(String)
-  PushValue(Value)
+  PushValue(value.Value)
   PushNum(Float)
   PushChar(character.Character)
   PushComplex(Float, Float)
