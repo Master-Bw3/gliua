@@ -2,6 +2,7 @@ import gleam/result
 import gleeunit
 import gleeunit/should
 import gliua/builder
+import gliua/character
 import gliua/decode
 import gliua/runtime
 
@@ -25,6 +26,22 @@ pub fn fail_eval_test() {
     |> builder.evaluate()
 
   should.be_error(eval_result)
+}
+
+pub fn char() {
+  let assert Ok(char) = character.from_string("a")
+
+  let eval_result =
+    []
+    |> builder.push_char(char)
+    |> builder.evaluate()
+    |> result.map(fn(runtime) {
+      runtime.stack(runtime)
+      |> decode.stack_1(decode.char)
+      |> result.map(character.to_string)
+    })
+
+  should.equal(eval_result, Ok(Ok("a")))
 }
 
 pub fn int_test() {

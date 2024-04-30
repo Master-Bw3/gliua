@@ -172,7 +172,7 @@ pub(crate) fn as_bool(value: ExValue) -> Result<bool, DecodeError> {
 }
 
 #[rustler::nif]
-pub(crate) fn as_char(value: ExValue) -> Result<String, DecodeError> {
+pub(crate) fn as_char(value: ExValue) -> Result<Character, DecodeError> {
     let expected = String::from("character");
     match value.value() {
         Value::Char(chars) => {
@@ -182,7 +182,7 @@ pub(crate) fn as_char(value: ExValue) -> Result<String, DecodeError> {
                     String::from("character array with rank > 0"),
                 ))
             } else {
-                Ok(chars.as_scalar().unwrap().to_string())
+                Ok(Character::Character(chars.as_scalar().unwrap().to_string()))
             }
         }
         value => Err(DecodeError::DecodeError(
@@ -212,4 +212,9 @@ pub(crate) fn as_complex(value: ExValue) -> Result<(f64, f64), DecodeError> {
             format!("{} array", value.type_name()),
         )),
     }
+}
+
+#[derive(NifTaggedEnum)]
+pub(crate) enum Character {
+    Character(String)
 }

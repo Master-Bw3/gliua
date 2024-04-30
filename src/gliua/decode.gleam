@@ -2,6 +2,7 @@ import gleam/function
 import gleam/list
 import gleam/result
 import gleam/string
+import gliua/character
 import gliua/value.{type Value}
 
 pub type DecodeErrors =
@@ -94,7 +95,7 @@ pub fn rows(of decoder_type: Decoder(inner)) -> Decoder(List(inner)) {
 pub fn string(value: Value) -> Result(String, DecodeErrors) {
   rows(char)
   |> function.apply1(value)
-  |> result.map(string.concat)
+  |> result.map(fn(x) { string.concat(list.map(x, character.to_string)) })
 }
 
 @external(erlang, "gliua_rs", "as_int")
@@ -107,4 +108,4 @@ pub fn float(value: Value) -> Result(Float, DecodeErrors)
 pub fn complex(value: Value) -> Result(#(Float, Float), DecodeErrors)
 
 @external(erlang, "gliua_rs", "as_char")
-pub fn char(value: Value) -> Result(String, DecodeErrors)
+pub fn char(value: Value) -> Result(character.Character, DecodeErrors)

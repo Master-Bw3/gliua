@@ -6,6 +6,7 @@
 
 import gleam/int
 import gleam/list
+import gliua/character
 import gliua/runtime.{type Runtime}
 import gliua/value.{type Value}
 
@@ -39,6 +40,14 @@ pub fn push_int(
   value: Int,
 ) -> List(Instruction) {
   [PushNum(int.to_float(value)), ..instructions]
+}
+
+/// Adds an instruction to push a character to the stack.
+pub fn push_char(
+  instructions: List(Instruction),
+  value: character.Character,
+) -> List(Instruction) {
+  [PushChar(value), ..instructions]
 }
 
 /// Adds an instruction to push a float to the stack.
@@ -564,7 +573,7 @@ pub type Instruction {
   RunFile(String)
   PushValue(Value)
   PushNum(Float)
-  PushChar(String)
+  PushChar(character.Character)
   PushComplex(Float, Float)
   PushNumList(List(Float))
   PushString(String)

@@ -1,8 +1,8 @@
 use ecow::EcoVec;
 use rustler::{types::tuple::get_tuple, Decoder, Encoder, Env, NifTaggedEnum, NifUnitEnum, Term};
-use uiua::{Complex, Primitive, Uiua, UiuaResult};
+use uiua::{Complex, Primitive, Uiua, UiuaResult, Value};
 
-use crate::gliua_value::ExValue;
+use crate::gliua_value::{Character, ExValue};
 
 #[derive(NifTaggedEnum)]
 pub(crate) enum Op {
@@ -10,7 +10,7 @@ pub(crate) enum Op {
     RunFile(String),
     PushValue(ExValue),
     PushNum(f64),
-    PushChar(String),
+    PushChar(Character),
     PushComplex(f64, f64),
     PushNumList(Vec<f64>),
     PushString(String),
@@ -160,7 +160,7 @@ impl Op {
 
             Op::PushNum(value) => Ok(uiua.push(value)),
 
-            Op::PushChar(value) => Ok(uiua.push(value)),
+            Op::PushChar(Character::Character(value)) => Ok(uiua.push(value.chars().next().unwrap())),
 
             Op::PushComplex(re, im) => Ok(uiua.push(Complex::new(re, im))),
 
