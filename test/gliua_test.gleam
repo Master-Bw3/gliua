@@ -1,6 +1,4 @@
-import gleam/io
 import gleam/result
-import gleam/string
 import gleeunit
 import gleeunit/should
 import gliua/builder
@@ -142,17 +140,31 @@ pub fn run_str_2_test() {
   should.equal(eval_result, Ok(Ok([[1, 2], [1, 2]])))
 }
 
-pub fn modifier_test() {
+pub fn run_file_test() {
+  let eval_result =
+    []
+    |> builder.run_file("./test/test.ua")
+    |> builder.evaluate()
+    |> result.map(fn(runtime) {
+      runtime.stack(runtime)
+      |> decode.stack_1(decode.rows(decode.rows(decode.int)))
+    })
+
+  should.equal(eval_result, Ok(Ok([[1, 2], [1, 2]])))
+}
+
+pub fn run_file_2_test() {
   let eval_result =
     []
     |> builder.push_int(2)
     |> builder.push_int(1)
     |> builder.join()
+    |> builder.run_file("./test/test2.ua")
     |> builder.evaluate()
     |> result.map(fn(runtime) {
       runtime.stack(runtime)
-      |> decode.stack_2(decode.int, decode.int)
+      |> decode.stack_1(decode.rows(decode.rows(decode.int)))
     })
 
-  should.equal(eval_result, Ok(Ok(#(1, 2))))
+  should.equal(eval_result, Ok(Ok([[1, 2], [1, 2]])))
 }

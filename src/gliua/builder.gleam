@@ -11,6 +11,13 @@ pub fn run_str(
   [instruction.RunStr(str), ..instructions]
 }
 
+pub fn run_file(
+  instructions instructions: List(Instruction),
+  path str: String,
+) -> List(Instruction) {
+  [instruction.RunFile(str), ..instructions]
+}
+
 pub fn push_value(
   instructions: List(Instruction),
   value: Value,

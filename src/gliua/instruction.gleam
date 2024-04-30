@@ -2,6 +2,7 @@ import gliua/value.{type Value}
 
 pub type Instruction {
   RunStr(String)
+  RunFile(String)
   PushValue(Value)
   PushNum(Float)
   PushChar(String)
