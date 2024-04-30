@@ -1,3 +1,5 @@
+//// Helper functions for decoding Uiua values.
+
 import gleam/function
 import gleam/list
 import gleam/result
@@ -15,6 +17,7 @@ pub type DecodeError {
 pub type Decoder(t) =
   fn(Value) -> Result(t, DecodeErrors)
 
+/// Decodes the first value of a list of values
 pub fn stack_1(
   first decoder: Decoder(a),
 ) -> fn(List(Value)) -> Result(a, DecodeErrors) {
@@ -32,6 +35,7 @@ pub fn stack_1(
   }
 }
 
+/// Decodes the first 2 values of a list of values
 pub fn stack_2(
   first decoder1: Decoder(a),
   second decoder2: Decoder(b),
@@ -54,6 +58,7 @@ pub fn stack_2(
   }
 }
 
+/// Decodes the first 3 values of a list of values
 pub fn stack_3(
   first decoder1: Decoder(a),
   second decoder2: Decoder(b),
@@ -85,6 +90,7 @@ fn all_errors(result: Result(a, List(DecodeError))) -> List(DecodeError) {
   }
 }
 
+/// Returns a list of a particular type
 pub fn rows(of decoder_type: Decoder(inner)) -> Decoder(List(inner)) {
   fn(value) {
     value.rows(value)
@@ -92,20 +98,25 @@ pub fn rows(of decoder_type: Decoder(inner)) -> Decoder(List(inner)) {
   }
 }
 
+/// Checks to see if a `Value` is a string, and returns that string if it is.
 pub fn string(value: Value) -> Result(String, DecodeErrors) {
   rows(char)
   |> function.apply1(value)
   |> result.map(fn(x) { string.concat(list.map(x, character.to_string)) })
 }
 
+/// Checks to see if a `Value` is an integer, and returns that integer if it is.
 @external(erlang, "gliua_rs", "as_int")
 pub fn int(value: Value) -> Result(Int, DecodeErrors)
 
+/// Checks to see if a `Value` is a float, and returns that float if it is.
 @external(erlang, "gliua_rs", "as_float")
 pub fn float(value: Value) -> Result(Float, DecodeErrors)
 
+/// Checks to see if a `Value` is a complex number, and returns a touple of `#(real, imaginary)` if it is.
 @external(erlang, "gliua_rs", "as_complex")
 pub fn complex(value: Value) -> Result(#(Float, Float), DecodeErrors)
 
+/// Checks to see if a `Value` is a character, and returns that character if it is.
 @external(erlang, "gliua_rs", "as_char")
 pub fn char(value: Value) -> Result(character.Character, DecodeErrors)

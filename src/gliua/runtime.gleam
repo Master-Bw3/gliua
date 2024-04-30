@@ -1,5 +1,6 @@
 import gliua/value.{type Value}
 
+/// A Uiua runtime
 pub type Runtime
 
 /// Retrieves the stack from the provided runtime.
