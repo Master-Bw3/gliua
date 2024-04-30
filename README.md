@@ -1,21 +1,37 @@
 # Gliua
 
-**TODO: Add description**
+Gliua is a library for running Uiua code from gleam 
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `gliua` to your list of dependencies in `mix.exs`:
+Add `gliua` to to your Gleam project.
 
-```elixir
-def deps do
-  [
-    {:gliua, "~> 0.1.0"}
-  ]
-end
+```sh
+gleam add gliua
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/gliua>.
+## Usage
 
+```gleam
+  import gliua/builder
+  import gliua/runtime
+  import gliua/decode
+
+  let eval_result =
+    []
+    |> builder.push_int(2)
+    |> builder.push_int(1)
+    |> builder.join()
+    |> builder.run_str("⊟.")
+    |> builder.evaluate()
+
+  let assert Ok(runtime) = eval_result
+
+  runtime.stack(runtime)
+    |> decode.stack_1(decode.rows(decode.rows(decode.int)))
+  //Ok([[1, 2], [1, 2]])
+```
+
+## Targets
+
+Gliua currently only targets Erlang

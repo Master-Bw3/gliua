@@ -132,12 +132,14 @@ pub fn run_str_2_test() {
     |> builder.join()
     |> builder.run_str("⊟.")
     |> builder.evaluate()
-    |> result.map(fn(runtime) {
-      runtime.stack(runtime)
-      |> decode.stack_1(decode.rows(decode.rows(decode.int)))
-    })
 
-  should.equal(eval_result, Ok(Ok([[1, 2], [1, 2]])))
+  let assert Ok(runtime) = eval_result
+
+  let stack =
+    runtime.stack(runtime)
+    |> decode.stack_1(decode.rows(decode.rows(decode.int)))
+
+  should.equal(stack, Ok([[1, 2], [1, 2]]))
 }
 
 pub fn run_file_test() {

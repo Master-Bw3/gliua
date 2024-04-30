@@ -1,8 +1,15 @@
+//// Helper functions for building a list of instructions to be evaluated.
+//// 
+//// Use `run_str` to add an instruction to run uiua source code.
+//// Use `run_file` to add an instruction to run a uiua source file.
+//// Use `evaluate` to evaluate a list of instructions.
+
 import gleam/int
 import gleam/list
 import gliua/runtime.{type Runtime}
 import gliua/value.{type Value}
 
+/// add an instruction to run uiua source code
 pub fn run_str(
   instructions: List(Instruction),
   str: String,
@@ -10,6 +17,7 @@ pub fn run_str(
   [RunStr(str), ..instructions]
 }
 
+/// Adds an instruction to run a uiua source file.
 pub fn run_file(
   instructions instructions: List(Instruction),
   path str: String,
@@ -17,6 +25,7 @@ pub fn run_file(
   [RunFile(str), ..instructions]
 }
 
+/// Adds an instruction to push a uiua value to the stack.
 pub fn push_value(
   instructions: List(Instruction),
   value: Value,
@@ -24,6 +33,7 @@ pub fn push_value(
   [PushValue(value), ..instructions]
 }
 
+/// Adds an instruction to push an integer to the stack.
 pub fn push_int(
   instructions: List(Instruction),
   value: Int,
@@ -31,6 +41,7 @@ pub fn push_int(
   [PushNum(int.to_float(value)), ..instructions]
 }
 
+/// Adds an instruction to push a float to the stack.
 pub fn push_float(
   instructions: List(Instruction),
   value: Float,
@@ -38,6 +49,7 @@ pub fn push_float(
   [PushNum(value), ..instructions]
 }
 
+/// Adds an instruction to push a complex number to the stack.
 pub fn push_complex(
   instructions: List(Instruction),
   real: Float,
@@ -46,6 +58,7 @@ pub fn push_complex(
   [PushComplex(real, imaginary), ..instructions]
 }
 
+/// Adds an instruction to push a list of integers to the stack.
 pub fn push_int_list(
   instructions: List(Instruction),
   value: List(Int),
@@ -53,6 +66,7 @@ pub fn push_int_list(
   [PushNumList(list.map(value, int.to_float)), ..instructions]
 }
 
+/// Adds an instruction to push a list of floats to the stack.
 pub fn push_float_list(
   instructions: List(Instruction),
   value: List(Float),
@@ -60,6 +74,7 @@ pub fn push_float_list(
   [PushNumList(value), ..instructions]
 }
 
+/// Adds an instruction to push a string to the stack.
 pub fn push_string(
   instructions: List(Instruction),
   value: String,
@@ -67,6 +82,7 @@ pub fn push_string(
   [PushString(value), ..instructions]
 }
 
+/// Adds an instruction to push a list of complex numbers to the stack.
 pub fn push_complex_list(
   instructions: List(Instruction),
   value: List(#(Float, Float)),
@@ -74,6 +90,7 @@ pub fn push_complex_list(
   [PushComplexList(value), ..instructions]
 }
 
+/// Adds an instruction to push a byte array to the stack.
 pub fn push_byte_array(
   instructions: List(Instruction),
   value: List(Int),
@@ -537,6 +554,7 @@ pub fn csv(instructions: List(Instruction)) -> List(Instruction) {
   [Csv, ..instructions]
 }
 
+/// Evaluates a list of instructions and return the resulting runtime or an error string as a `Result`.
 @external(erlang, "gliua_rs", "evaluate")
 pub fn evaluate(instructions: List(Instruction)) -> Result(Runtime, String)
 
