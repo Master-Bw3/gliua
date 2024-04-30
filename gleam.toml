@@ -1,5 +1,8 @@
 name = "gliua"
 version = "0.0.1"
+licences = ["MIT"]
+description = "A library for evaluating Uiua code from gleam"
+repository = "https://github.com/Master-Bw3/gliua"
 
 # Fill out these fields if you intend to generate HTML documentation or publish
 # your project to the Hex package manager.
