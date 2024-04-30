@@ -8,8 +8,8 @@
         },
         {
             "type": "shell",
-            "label": "run",
-            "command": "cargo build --release && cp target/release/libgliua.so ./priv && gleam run"
+            "label": "test",
+            "command": "cargo build --release && cp target/release/libgliua.so ./priv && gleam test"
         },
     ]
 }
