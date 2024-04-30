@@ -126,7 +126,6 @@ pub fn run_str_test() {
   should.equal(eval_result, Ok(Ok([[1, 2], [1, 2]])))
 }
 
-
 pub fn run_str_2_test() {
   let eval_result =
     []
@@ -143,3 +142,17 @@ pub fn run_str_2_test() {
   should.equal(eval_result, Ok(Ok([[1, 2], [1, 2]])))
 }
 
+pub fn modifier_test() {
+  let eval_result =
+    []
+    |> builder.push_int(2)
+    |> builder.push_int(1)
+    |> builder.join()
+    |> builder.evaluate()
+    |> result.map(fn(runtime) {
+      runtime.stack(runtime)
+      |> decode.stack_2(decode.int, decode.int)
+    })
+
+  should.equal(eval_result, Ok(Ok(#(1, 2))))
+}
