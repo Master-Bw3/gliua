@@ -1,6 +1,5 @@
 import gleam/int
 import gleam/list
-import gliua/instruction.{type Instruction}
 import gliua/runtime.{type Runtime}
 import gliua/value.{type Value}
 
@@ -8,35 +7,35 @@ pub fn run_str(
   instructions: List(Instruction),
   str: String,
 ) -> List(Instruction) {
-  [instruction.RunStr(str), ..instructions]
+  [RunStr(str), ..instructions]
 }
 
 pub fn run_file(
   instructions instructions: List(Instruction),
   path str: String,
 ) -> List(Instruction) {
-  [instruction.RunFile(str), ..instructions]
+  [RunFile(str), ..instructions]
 }
 
 pub fn push_value(
   instructions: List(Instruction),
   value: Value,
 ) -> List(Instruction) {
-  [instruction.PushValue(value), ..instructions]
+  [PushValue(value), ..instructions]
 }
 
 pub fn push_int(
   instructions: List(Instruction),
   value: Int,
 ) -> List(Instruction) {
-  [instruction.PushNum(int.to_float(value)), ..instructions]
+  [PushNum(int.to_float(value)), ..instructions]
 }
 
 pub fn push_float(
   instructions: List(Instruction),
   value: Float,
 ) -> List(Instruction) {
-  [instruction.PushNum(value), ..instructions]
+  [PushNum(value), ..instructions]
 }
 
 pub fn push_complex(
@@ -44,499 +43,644 @@ pub fn push_complex(
   real: Float,
   imaginary: Float,
 ) -> List(Instruction) {
-  [instruction.PushComplex(real, imaginary), ..instructions]
+  [PushComplex(real, imaginary), ..instructions]
 }
 
 pub fn push_int_list(
   instructions: List(Instruction),
   value: List(Int),
 ) -> List(Instruction) {
-  [instruction.PushNumList(list.map(value, int.to_float)), ..instructions]
+  [PushNumList(list.map(value, int.to_float)), ..instructions]
 }
 
 pub fn push_float_list(
   instructions: List(Instruction),
   value: List(Float),
 ) -> List(Instruction) {
-  [instruction.PushNumList(value), ..instructions]
+  [PushNumList(value), ..instructions]
 }
 
 pub fn push_string(
   instructions: List(Instruction),
   value: String,
 ) -> List(Instruction) {
-  [instruction.PushString(value), ..instructions]
+  [PushString(value), ..instructions]
 }
 
 pub fn push_complex_list(
   instructions: List(Instruction),
   value: List(#(Float, Float)),
 ) -> List(Instruction) {
-  [instruction.PushComplexList(value), ..instructions]
+  [PushComplexList(value), ..instructions]
 }
 
 pub fn push_byte_array(
   instructions: List(Instruction),
   value: List(Int),
 ) -> List(Instruction) {
-  [instruction.PushByteArray(value), ..instructions]
+  [PushByteArray(value), ..instructions]
 }
 
 pub fn eta(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Eta, ..instructions]
+  [Eta, ..instructions]
 }
 
 pub fn pi(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Pi, ..instructions]
+  [Pi, ..instructions]
 }
 
 pub fn tau(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Tau, ..instructions]
+  [Tau, ..instructions]
 }
 
 pub fn infinity(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Infinity, ..instructions]
+  [Infinity, ..instructions]
 }
 
 pub fn not(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Not, ..instructions]
+  [Not, ..instructions]
 }
 
 pub fn negate(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Neg, ..instructions]
+  [Neg, ..instructions]
 }
 
 pub fn abs(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Abs, ..instructions]
+  [Abs, ..instructions]
 }
 
 pub fn sign(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Sign, ..instructions]
+  [Sign, ..instructions]
 }
 
 pub fn sqrt(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Sqrt, ..instructions]
+  [Sqrt, ..instructions]
 }
 
 pub fn sin(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Sin, ..instructions]
+  [Sin, ..instructions]
 }
 
 pub fn floor(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Floor, ..instructions]
+  [Floor, ..instructions]
 }
 
 pub fn ceil(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Ceil, ..instructions]
+  [Ceil, ..instructions]
 }
 
 pub fn round(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Round, ..instructions]
+  [Round, ..instructions]
 }
 
 pub fn equal_to(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Eq, ..instructions]
+  [Eq, ..instructions]
 }
 
 pub fn not_equal_to(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Ne, ..instructions]
+  [Ne, ..instructions]
 }
 
 pub fn less_than(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Lt, ..instructions]
+  [Lt, ..instructions]
 }
 
 pub fn less_than_or_equal_to(
   instructions: List(Instruction),
 ) -> List(Instruction) {
-  [instruction.Le, ..instructions]
+  [Le, ..instructions]
 }
 
 pub fn greater_than(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Gt, ..instructions]
+  [Gt, ..instructions]
 }
 
 pub fn greater_than_or_equal_to(
   instructions: List(Instruction),
 ) -> List(Instruction) {
-  [instruction.Ge, ..instructions]
+  [Ge, ..instructions]
 }
 
 pub fn add(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Add, ..instructions]
+  [Add, ..instructions]
 }
 
 pub fn subtract(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Sub, ..instructions]
+  [Sub, ..instructions]
 }
 
 pub fn multiply(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Mul, ..instructions]
+  [Mul, ..instructions]
 }
 
 pub fn divide(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Div, ..instructions]
+  [Div, ..instructions]
 }
 
 pub fn modulo(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Mod, ..instructions]
+  [Mod, ..instructions]
 }
 
 pub fn pow(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Pow, ..instructions]
+  [Pow, ..instructions]
 }
 
 pub fn log(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Log, ..instructions]
+  [Log, ..instructions]
 }
 
 pub fn min(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Min, ..instructions]
+  [Min, ..instructions]
 }
 
 pub fn max(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Max, ..instructions]
+  [Max, ..instructions]
 }
 
 pub fn atan(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Atan, ..instructions]
+  [Atan, ..instructions]
 }
 
 pub fn complex(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Complex, ..instructions]
+  [Complex, ..instructions]
 }
 
 pub fn match(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Match, ..instructions]
+  [Match, ..instructions]
 }
 
 pub fn join(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Join, ..instructions]
+  [Join, ..instructions]
 }
 
 pub fn transpose(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Transpose, ..instructions]
+  [Transpose, ..instructions]
 }
 
 pub fn keep(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Keep, ..instructions]
+  [Keep, ..instructions]
 }
 
 pub fn take(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Take, ..instructions]
+  [Take, ..instructions]
 }
 
 pub fn drop(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Drop, ..instructions]
+  [Drop, ..instructions]
 }
 
 pub fn rotate(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Rotate, ..instructions]
+  [Rotate, ..instructions]
 }
 
 pub fn couple(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Couple, ..instructions]
+  [Couple, ..instructions]
 }
 
 pub fn rise(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Rise, ..instructions]
+  [Rise, ..instructions]
 }
 
 pub fn fall(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Fall, ..instructions]
+  [Fall, ..instructions]
 }
 
 pub fn select(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Select, ..instructions]
+  [Select, ..instructions]
 }
 
 pub fn windows(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Windows, ..instructions]
+  [Windows, ..instructions]
 }
 
 pub fn where(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Where, ..instructions]
+  [Where, ..instructions]
 }
 
 pub fn classify(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Classify, ..instructions]
+  [Classify, ..instructions]
 }
 
 pub fn deduplicate(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Deduplicate, ..instructions]
+  [Deduplicate, ..instructions]
 }
 
 pub fn unique(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Unique, ..instructions]
+  [Unique, ..instructions]
 }
 
 pub fn member(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Member, ..instructions]
+  [Member, ..instructions]
 }
 
 pub fn find(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Find, ..instructions]
+  [Find, ..instructions]
 }
 
 pub fn mask(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Mask, ..instructions]
+  [Mask, ..instructions]
 }
 
 pub fn index_of(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.IndexOf, ..instructions]
+  [IndexOf, ..instructions]
 }
 
 pub fn coordinate(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Coordinate, ..instructions]
+  [Coordinate, ..instructions]
 }
 
 pub fn box(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Box, ..instructions]
+  [Box, ..instructions]
 }
 
 pub fn representation(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Repr, ..instructions]
+  [Repr, ..instructions]
 }
 
 pub fn parse(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Parse, ..instructions]
+  [Parse, ..instructions]
 }
 
 pub fn utf(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Utf, ..instructions]
+  [Utf, ..instructions]
 }
 
 pub fn range(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Range, ..instructions]
+  [Range, ..instructions]
 }
 
 pub fn reverse(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Reverse, ..instructions]
+  [Reverse, ..instructions]
 }
 
 pub fn deshape(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Deshape, ..instructions]
+  [Deshape, ..instructions]
 }
 
 pub fn fix(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Fix, ..instructions]
+  [Fix, ..instructions]
 }
 
 pub fn first(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.First, ..instructions]
+  [First, ..instructions]
 }
 
 pub fn length(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Len, ..instructions]
+  [Len, ..instructions]
 }
 
 pub fn shape(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Shape, ..instructions]
+  [Shape, ..instructions]
 }
 
 pub fn bits(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Bits, ..instructions]
+  [Bits, ..instructions]
 }
 
 pub fn reduce(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Reduce, ..instructions]
+  [Reduce, ..instructions]
 }
 
 pub fn scan(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Scan, ..instructions]
+  [Scan, ..instructions]
 }
 
 pub fn fold(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Fold, ..instructions]
+  [Fold, ..instructions]
 }
 
 pub fn each(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Each, ..instructions]
+  [Each, ..instructions]
 }
 
 pub fn rows(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Rows, ..instructions]
+  [Rows, ..instructions]
 }
 
 pub fn table(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Table, ..instructions]
+  [Table, ..instructions]
 }
 
 pub fn inventory(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Inventory, ..instructions]
+  [Inventory, ..instructions]
 }
 
 pub fn repeat(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Repeat, ..instructions]
+  [Repeat, ..instructions]
 }
 
 pub fn do(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Do, ..instructions]
+  [Do, ..instructions]
 }
 
 pub fn group(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Group, ..instructions]
+  [Group, ..instructions]
 }
 
 pub fn partition(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Partition, ..instructions]
+  [Partition, ..instructions]
 }
 
 pub fn reshape(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Reshape, ..instructions]
+  [Reshape, ..instructions]
 }
 
 pub fn rerank(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Rerank, ..instructions]
+  [Rerank, ..instructions]
 }
 
 pub fn duplicate(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Dup, ..instructions]
+  [Dup, ..instructions]
 }
 
 pub fn flip(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Flip, ..instructions]
+  [Flip, ..instructions]
 }
 
 pub fn over(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Over, ..instructions]
+  [Over, ..instructions]
 }
 
 pub fn pop(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Pop, ..instructions]
+  [Pop, ..instructions]
 }
 
 pub fn all(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.All, ..instructions]
+  [All, ..instructions]
 }
 
 pub fn fill(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Fill, ..instructions]
+  [Fill, ..instructions]
 }
 
 pub fn this(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.This, ..instructions]
+  [This, ..instructions]
 }
 
 pub fn recurse(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Recur, ..instructions]
+  [Recur, ..instructions]
 }
 
 pub fn try(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Try, ..instructions]
+  [Try, ..instructions]
 }
 
 pub fn assert_(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Assert, ..instructions]
+  [Assert, ..instructions]
 }
 
 pub fn random(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Rand, ..instructions]
+  [Rand, ..instructions]
 }
 
 pub fn generate(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Gen, ..instructions]
+  [Gen, ..instructions]
 }
 
 pub fn deal(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Deal, ..instructions]
+  [Deal, ..instructions]
 }
 
 pub fn tag(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Tag, ..instructions]
+  [Tag, ..instructions]
 }
 
 pub fn type_(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Type, ..instructions]
+  [Type, ..instructions]
 }
 
 pub fn memoize(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Memo, ..instructions]
+  [Memo, ..instructions]
 }
 
 pub fn spawn(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Spawn, ..instructions]
+  [Spawn, ..instructions]
 }
 
 pub fn pool(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Pool, ..instructions]
+  [Pool, ..instructions]
 }
 
 pub fn wait(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Wait, ..instructions]
+  [Wait, ..instructions]
 }
 
 pub fn send(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Send, ..instructions]
+  [Send, ..instructions]
 }
 
 pub fn recieve(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Recv, ..instructions]
+  [Recv, ..instructions]
 }
 
 pub fn try_recieve(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.TryRecv, ..instructions]
+  [TryRecv, ..instructions]
 }
 
 pub fn now(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Now, ..instructions]
+  [Now, ..instructions]
 }
 
 pub fn set_inverse(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.SetInverse, ..instructions]
+  [SetInverse, ..instructions]
 }
 
 pub fn set_under(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.SetUnder, ..instructions]
+  [SetUnder, ..instructions]
 }
 
 pub fn insert(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Insert, ..instructions]
+  [Insert, ..instructions]
 }
 
 pub fn has(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Has, ..instructions]
+  [Has, ..instructions]
 }
 
 pub fn get(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Get, ..instructions]
+  [Get, ..instructions]
 }
 
 pub fn remove(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Remove, ..instructions]
+  [Remove, ..instructions]
 }
 
 pub fn map(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Map, ..instructions]
+  [Map, ..instructions]
 }
 
 pub fn shapes(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Shapes, ..instructions]
+  [Shapes, ..instructions]
 }
 
 pub fn types(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Types, ..instructions]
+  [Types, ..instructions]
 }
 
 pub fn trace(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Trace, ..instructions]
+  [Trace, ..instructions]
 }
 
 pub fn stack(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Stack, ..instructions]
+  [Stack, ..instructions]
 }
 
 pub fn dump(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Dump, ..instructions]
+  [Dump, ..instructions]
 }
 
 pub fn regex(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Regex, ..instructions]
+  [Regex, ..instructions]
 }
 
 pub fn csv(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Csv, ..instructions]
+  [Csv, ..instructions]
 }
 
 @external(erlang, "gliua_rs", "evaluate")
 pub fn evaluate(instructions: List(Instruction)) -> Result(Runtime, String)
+
+@internal
+pub type Instruction {
+  RunStr(String)
+  RunFile(String)
+  PushValue(Value)
+  PushNum(Float)
+  PushChar(String)
+  PushComplex(Float, Float)
+  PushNumList(List(Float))
+  PushString(String)
+  PushComplexList(List(#(Float, Float)))
+  PushByteArray(List(Int))
+  Dup
+  Over
+  Flip
+  Pop
+  Identity
+  Not
+  Sign
+  Neg
+  Abs
+  Sqrt
+  Sin
+  Floor
+  Ceil
+  Round
+  Eq
+  Ne
+  Lt
+  Le
+  Gt
+  Ge
+  Add
+  Sub
+  Mul
+  Div
+  Mod
+  Pow
+  Log
+  Min
+  Max
+  Atan
+  Complex
+  Len
+  Shape
+  Range
+  First
+  Reverse
+  Deshape
+  Fix
+  Bits
+  Transpose
+  Rise
+  Fall
+  Where
+  Classify
+  Deduplicate
+  Unique
+  Box
+  Parse
+  Match
+  Couple
+  Join
+  Select
+  Pick
+  Reshape
+  Rerank
+  Take
+  Drop
+  Rotate
+  Windows
+  Keep
+  Find
+  Mask
+  Member
+  IndexOf
+  Coordinate
+  Reduce
+  Fold
+  Scan
+  Each
+  Rows
+  Table
+  Inventory
+  Repeat
+  Group
+  Partition
+  Content
+  Gap
+  Dip
+  On
+  By
+  Both
+  Bind
+  Un
+  SetInverse
+  SetUnder
+  Under
+  Fork
+  Cascade
+  Bracket
+  All
+  Do
+  Fill
+  Try
+  Assert
+  This
+  Recur
+  Rand
+  Memo
+  Comptime
+  Spawn
+  Pool
+  Wait
+  Send
+  Recv
+  TryRecv
+  Gen
+  Deal
+  Regex
+  Utf
+  Tag
+  Type
+  Now
+  Eta
+  Pi
+  Tau
+  Infinity
+  Map
+  Insert
+  Has
+  Get
+  Remove
+  Shapes
+  Types
+  Stack
+  Trace
+  Dump
+  Stringify
+  Quote
+  Sig
+  Csv
+  Repr
+}
