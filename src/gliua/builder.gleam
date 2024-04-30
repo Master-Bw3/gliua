@@ -224,7 +224,7 @@ pub fn drop(instructions: List(Instruction)) -> List(Instruction) {
 }
 
 pub fn rotate(instructions: List(Instruction)) -> List(Instruction) {
-  [instruction.Rptate, ..instructions]
+  [instruction.Rotate, ..instructions]
 }
 
 pub fn couple(instructions: List(Instruction)) -> List(Instruction) {
