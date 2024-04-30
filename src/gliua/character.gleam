@@ -1,7 +1,7 @@
 import gleam/result
 import gleam/string
 
-// Represents a Uiua Character.
+/// Represents a Uiua Character.
 pub opaque type Character {
   Character(String)
 }

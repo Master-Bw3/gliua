@@ -567,7 +567,6 @@ pub fn csv(instructions: List(Instruction)) -> List(Instruction) {
 @external(erlang, "gliua_rs", "evaluate")
 pub fn evaluate(instructions: List(Instruction)) -> Result(Runtime, String)
 
-@internal
 pub type Instruction {
   RunStr(String)
   RunFile(String)
