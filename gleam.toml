@@ -1,5 +1,5 @@
 name = "gliua"
-version = "0.0.2"
+version = "0.0.3"
 licences = ["MIT"]
 description = "A library for evaluating Uiua code from gleam"
 repository = { type = "github", user = "Master-Bw3", repo = "gliua" }
