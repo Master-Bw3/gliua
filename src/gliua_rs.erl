@@ -4,7 +4,8 @@
 -on_load(init/0).
 
 init() ->
-    ok = erlang:load_nif("priv/libgliua", 0).
+    Dir = code:lib_dir(gliua, priv),
+    ok = erlang:load_nif(Dir ++ "/libgliua", 0).
 
 evaluate(_stack) ->
     exit(nif_library_not_loaded).
